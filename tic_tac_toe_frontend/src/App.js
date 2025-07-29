@@ -114,10 +114,7 @@ function App() {
       </main>
       <footer className="ttt-footer">
         <small>
-          <span style={{color: "#bbb"}}>
-            Minimalistic React Tic Tac Toe •{' '}
-            <a href="https://reactjs.org/" target="_blank" rel="noopener noreferrer" style={{color: COLORS.primary, textDecoration: 'none'}}>React Docs</a>
-          </span>
+          Developed by Kavia
         </small>
       </footer>
     </div>
