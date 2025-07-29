@@ -167,33 +167,7 @@ body, html {
   pointer-events: none; /* visually detached, not interactive */
 }
 
-/* ---- Minimal login form styles ---- */
-.ttt-login-input {
-  /* Mirror card input minimal look */
-  border: 1.5px solid var(--secondary, #e3e3e3);
-  border-radius: 8px;
-  color: var(--text, #f44336);
-  padding: 11px 12px;
-  font-size: 16px;
-  font-family: 'Inter', 'Helvetica Neue', Arial, sans-serif;
-  outline: none;
-  margin-bottom: 0;
-  background: #fff;
-  box-sizing: border-box;
-  transition: border 0.18s, color 0.13s, box-shadow 0.2s;
-}
-
-.ttt-login-input:focus {
-  border-color: var(--primary, #1976d2);
-  box-shadow: 0 0 0 2px #1976d233;
-}
-
-@media (max-width: 600px) {
-  .ttt-login-input {
-    font-size: 14.5px;
-    padding: 9px 8px;
-  }
-}
+/* (Login/Register inputs removed - not needed for local Tic Tac Toe) */
 
 /* Mobile responsiveness */
 @media (max-width: 600px) {

@@ -1,62 +1,34 @@
-import React, { useState } from 'react';
-import './App.css';
-import Login from './Login';
-import Register from './Register'; // Import the Register component
-
-// Color palette from requirements
-const COLORS = {
-  primary: '#1976d2', // blue
-  secondary: '#e3e3e3', // light gray
-  accent: '#f44336', // red for winner highlight
-};
+import React, { useState } from "react";
+import "./App.css";
 
 /**
  * PUBLIC_INTERFACE
- * Main App component handling login and game state
+ * Main App component for minimalistic Tic Tac Toe game.
+ * - Renders a centered 3x3 grid
+ * - Shows current player, winner, or draw info
+ * - Allows restart/new game
  */
 function App() {
-  // -- AUTH & LOGIN STATE --
-  // For demo, the "credentials" are hardcoded
-  const DUMMY_USER = { username: 'test', password: 'test' };
-  const [user, setUser] = useState(null); // user: {username}
-  const [authError, setAuthError] = useState('');
-
-  // PUBLIC_INTERFACE
-  function handleLogin(username, password) {
-    // Minimalistic simulated authentication (later replace w/ API)
-    if (username === DUMMY_USER.username && password === DUMMY_USER.password) {
-      setUser({ username });
-      setAuthError('');
-    } else {
-      setAuthError('Invalid username or password');
-    }
-  }
-  // PUBLIC_INTERFACE
-  function handleLogout() {
-    setUser(null);
-    setAuthError('');
-    handleRestart(); // reset game state too when logging out
-  }
-
-  // -- GAME STATE --
+  // Game board: Array of 9 cells (null | "X" | "O")
   const initialBoard = Array(9).fill(null);
   const [board, setBoard] = useState(initialBoard);
   const [xIsNext, setXIsNext] = useState(true);
   const [winner, setWinner] = useState(null);
 
-  const currentPlayer = xIsNext ? 'X' : 'O';
+  // Who is the current player? ("X" or "O")
+  const currentPlayer = xIsNext ? "X" : "O";
 
   // PUBLIC_INTERFACE
-  function handleClick(index) {
-    if (board[index] || winner) return;
-    const newBoard = board.slice();
-    newBoard[index] = currentPlayer;
-    setBoard(newBoard);
-    const gameResult = calculateWinner(newBoard);
-    if (gameResult) {
-      setWinner(gameResult);
-    } else if (newBoard.every(Boolean)) {
-      setWinner('draw');
+  function handleClick(i) {
+    if (board[i] || winner) return;
+    const nextBoard = board.slice();
+    nextBoard[i] = currentPlayer;
+    setBoard(nextBoard);
+    const result = calculateWinner(nextBoard);
+    if (result) {
+      setWinner(result);
+    } else if (nextBoard.every(Boolean)) {
+      setWinner("draw");
     } else {
       setXIsNext(!xIsNext);
     }
@@ -74,7 +46,7 @@ function App() {
       <button
         className="ttt-square"
         onClick={() => handleClick(i)}
-        aria-label={`Cell ${i+1} (${board[i] ? board[i] : 'empty'})`}
+        aria-label={`Cell ${i + 1} (${board[i] ? board[i] : "empty"})`}
         style={getSquareStyle(i, board, winner)}
       >
         {board[i]}
@@ -82,10 +54,15 @@ function App() {
     );
   }
 
+  // Game status display (winner, draw, or next player)
   let status;
-  if (winner === 'draw') {
-    status = <span className="ttt-draw">It's a draw!</span>;
-  } else if (winner) {
+  if (winner === "draw") {
+    status = (
+      <span className="ttt-draw">
+        It's a draw!
+      </span>
+    );
+  } else if (winner && winner.player) {
     status = (
       <span className="ttt-winner">
         {winner.player} wins!
@@ -94,63 +71,42 @@ function App() {
   } else {
     status = (
       <span>
-        Next: <span style={{color: COLORS.primary, fontWeight: 600}}>{currentPlayer}</span>
+        Next:{" "}
+        <span style={{ color: "var(--primary)", fontWeight: 600 }}>
+          {currentPlayer}
+        </span>
       </span>
     );
   }
 
-  if (!user) {
-    // Not logged in: show Login UI
-    return <Login onLogin={handleLogin} authError={authError} />;
-  }
-
-  // Minimal and centered layout with light theme, now includes Logout
   return (
     <div className="ttt-outer">
       <div className="ttt-main-centered">
         <main className="ttt-container" role="main">
           <h1 className="ttt-title">Tic Tac Toe</h1>
-          <div className="ttt-board" role="grid" aria-label="Tic Tac Toe board">
-            {[0,1,2].map(row => (
+          <div
+            className="ttt-board"
+            role="grid"
+            aria-label="Tic Tac Toe board"
+          >
+            {[0, 1, 2].map((row) => (
               <div className="ttt-row" key={row}>
-                { [0,1,2].map(col =>
-                  renderSquare(row * 3 + col))}
+                {[0, 1, 2].map((col) => renderSquare(row * 3 + col))}
               </div>
             ))}
           </div>
           <div className="ttt-info">
-            <div className="ttt-status">{status}</div>
+            <div className="ttt-status" data-testid="status-msg">{status}</div>
             <button
               className="ttt-restart"
               onClick={handleRestart}
               aria-label="Restart game"
             >
-              Restart
+              {winner || board.some(Boolean) ? "Restart" : "Start New Game"}
             </button>
-            <button
-              style={{
-                background: '#fff',
-                color: 'var(--accent, #f44336)',
-                border: '1px solid var(--secondary, #e3e3e3)',
-                borderRadius: 7,
-                fontWeight: 600,
-                fontSize: '0.95rem',
-                padding: '7px 18px',
-                marginTop: 8,
-                cursor: 'pointer'
-              }}
-              onClick={handleLogout}
-              aria-label="Logout"
-              className="ttt-logout-btn"
-            >
-              Logout
-            </button>
-            <div style={{fontSize: 13, color: '#888', marginTop: 5}}>
-              Logged in as: <b>{user.username}</b>
-            </div>
           </div>
         </main>
-        {/* Footer floats below the card with ample top margin */}
+        {/* Lightweight, minimal floating footer */}
         <footer className="ttt-footer-floating">
           <small>
             Developed by Kavia
@@ -164,41 +120,45 @@ function App() {
 // PUBLIC_INTERFACE
 function calculateWinner(board) {
   /**
-   * Determines the winner of the Tic Tac Toe game, if any. Returns:
-   *   - {player: X|O, line: [i,j,k]} if there's a winner
-   *   - null otherwise
+   * Returns an object {player: "X"|"O", line: [i,j,k]} if a player has won
+   * Returns null if no winner
    */
   const lines = [
-    [0,1,2],[3,4,5],[6,7,8],
-    [0,3,6],[1,4,7],[2,5,8],
-    [0,4,8],[2,4,6]
+    [0, 1, 2], [3, 4, 5], [6, 7, 8], // Rows
+    [0, 3, 6], [1, 4, 7], [2, 5, 8], // Cols
+    [0, 4, 8], [2, 4, 6] // Diags
   ];
   for (let line of lines) {
-    const [a,b,c] = line;
+    const [a, b, c] = line;
     if (board[a] && board[a] === board[b] && board[a] === board[c]) {
-      return {player: board[a], line};
+      return { player: board[a], line };
     }
   }
   return null;
 }
 
-// Helper for conditional highlight styling
+// Returns style overrides for a cell (highlight the winning line, color x/o)
 function getSquareStyle(i, board, winner) {
   let style = {
-    color: board[i] === 'X' ? COLORS.primary : (board[i] === 'O' ? COLORS.accent : 'inherit'),
-    borderColor: COLORS.secondary,
+    color:
+      board[i] === "X"
+        ? "var(--primary)"
+        : board[i] === "O"
+        ? "var(--accent)"
+        : "inherit",
+    borderColor: "var(--secondary)",
     fontWeight: 500,
-    boxShadow: 'none',
-    background: '#fff',
-    transition: 'background 0.2s, color 0.2s'
+    boxShadow: "none",
+    background: "#fff",
+    transition: "background 0.2s, color 0.2s",
   };
-  // Highlight winning line
-  if (Array.isArray(winner?.line) && winner.line.includes(i)) {
-    style.background = COLORS.secondary;
-    style.boxShadow = `0 0 3px 2px ${COLORS.accent}55`;
+  // If this cell is part of winning line, highlight
+  if (winner && Array.isArray(winner.line) && winner.line.includes(i)) {
+    style.background = "var(--secondary)";
+    style.boxShadow = `0 0 3px 2px var(--accent, #f44336)55`;
     style.fontWeight = 700;
-    style.color = COLORS.accent;
-    style.borderColor = COLORS.accent;
+    style.color = "var(--accent)";
+    style.borderColor = "var(--accent)";
   }
   return style;
 }
