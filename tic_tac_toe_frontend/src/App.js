@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import './App.css';
+import Login from './Login';
 
 // Color palette from requirements
 const COLORS = {
@@ -8,34 +9,48 @@ const COLORS = {
   accent: '#f44336', // red for winner highlight
 };
 
-// PUBLIC_INTERFACE
+/**
+ * PUBLIC_INTERFACE
+ * Main App component handling login and game state
+ */
 function App() {
-  /**
-   * This is the main app for the Tic Tac Toe game.
-   * Game board and state are managed here.
-   */
+  // -- AUTH & LOGIN STATE --
+  // For demo, the "credentials" are hardcoded
+  const DUMMY_USER = { username: 'test', password: 'test' };
+  const [user, setUser] = useState(null); // user: {username}
+  const [authError, setAuthError] = useState('');
 
-  // The empty board template
+  // PUBLIC_INTERFACE
+  function handleLogin(username, password) {
+    // Minimalistic simulated authentication (later replace w/ API)
+    if (username === DUMMY_USER.username && password === DUMMY_USER.password) {
+      setUser({ username });
+      setAuthError('');
+    } else {
+      setAuthError('Invalid username or password');
+    }
+  }
+  // PUBLIC_INTERFACE
+  function handleLogout() {
+    setUser(null);
+    setAuthError('');
+    handleRestart(); // reset game state too when logging out
+  }
+
+  // -- GAME STATE --
   const initialBoard = Array(9).fill(null);
-
-  // React state hooks
   const [board, setBoard] = useState(initialBoard);
   const [xIsNext, setXIsNext] = useState(true);
   const [winner, setWinner] = useState(null);
 
-  // Compute next player's mark
   const currentPlayer = xIsNext ? 'X' : 'O';
 
   // PUBLIC_INTERFACE
   function handleClick(index) {
-    // If the square is filled or game over, ignore clicks
     if (board[index] || winner) return;
-
     const newBoard = board.slice();
     newBoard[index] = currentPlayer;
     setBoard(newBoard);
-
-    // Check for winner after the move
     const gameResult = calculateWinner(newBoard);
     if (gameResult) {
       setWinner(gameResult);
@@ -53,7 +68,6 @@ function App() {
     setWinner(null);
   }
 
-  // Board rendering logic
   function renderSquare(i) {
     return (
       <button
@@ -67,7 +81,6 @@ function App() {
     );
   }
 
-  // Build the game status message
   let status;
   if (winner === 'draw') {
     status = <span className="ttt-draw">It's a draw!</span>;
@@ -85,41 +98,64 @@ function App() {
     );
   }
 
-  // Find winning line to highlight squares (if applicable)
-  const winningLine = Array.isArray(winner?.line) ? winner.line : null;
+  if (!user) {
+    // Not logged in: show Login UI
+    return <Login onLogin={handleLogin} authError={authError} />;
+  }
 
-  // Minimal and centered layout with light theme
+  // Minimal and centered layout with light theme, now includes Logout
   return (
     <div className="ttt-outer">
-      <main className="ttt-container" role="main">
-        <h1 className="ttt-title">Tic Tac Toe</h1>
-        <div className="ttt-board" role="grid" aria-label="Tic Tac Toe board">
-          {[0,1,2].map(row => (
-            <div className="ttt-row" key={row}>
-              { [0,1,2].map(col =>
-                renderSquare(row * 3 + col))}
+      <div className="ttt-main-centered">
+        <main className="ttt-container" role="main">
+          <h1 className="ttt-title">Tic Tac Toe</h1>
+          <div className="ttt-board" role="grid" aria-label="Tic Tac Toe board">
+            {[0,1,2].map(row => (
+              <div className="ttt-row" key={row}>
+                { [0,1,2].map(col =>
+                  renderSquare(row * 3 + col))}
+              </div>
+            ))}
+          </div>
+          <div className="ttt-info">
+            <div className="ttt-status">{status}</div>
+            <button
+              className="ttt-restart"
+              onClick={handleRestart}
+              aria-label="Restart game"
+            >
+              Restart
+            </button>
+            <button
+              style={{
+                background: '#fff',
+                color: 'var(--accent, #f44336)',
+                border: '1px solid var(--secondary, #e3e3e3)',
+                borderRadius: 7,
+                fontWeight: 600,
+                fontSize: '0.95rem',
+                padding: '7px 18px',
+                marginTop: 8,
+                cursor: 'pointer'
+              }}
+              onClick={handleLogout}
+              aria-label="Logout"
+              className="ttt-logout-btn"
+            >
+              Logout
+            </button>
+            <div style={{fontSize: 13, color: '#888', marginTop: 5}}>
+              Logged in as: <b>{user.username}</b>
             </div>
-          ))}
-        </div>
-        <div className="ttt-info">
-          <div className="ttt-status">{status}</div>
-          <button
-            className="ttt-restart"
-            onClick={handleRestart}
-            aria-label="Restart game"
-          >
-            Restart
-          </button>
-        </div>
-      </main>
-      <footer className="ttt-footer">
-        <small>
-          <span style={{color: "#bbb"}}>
-            Minimalistic React Tic Tac Toe •{' '}
-            <a href="https://reactjs.org/" target="_blank" rel="noopener noreferrer" style={{color: COLORS.primary, textDecoration: 'none'}}>React Docs</a>
-          </span>
-        </small>
-      </footer>
+          </div>
+        </main>
+        {/* Footer floats below the card with ample top margin */}
+        <footer className="ttt-footer-floating">
+          <small>
+            Developed by Kavia
+          </small>
+        </footer>
+      </div>
     </div>
   );
 }
