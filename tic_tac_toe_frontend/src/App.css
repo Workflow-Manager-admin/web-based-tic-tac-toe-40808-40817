@@ -27,6 +27,14 @@ body, html {
   align-items: center;
 }
 
+/* NEW: Centered stack holding card & detached footer directly below it */
+.ttt-main-centered {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100vw;
+}
+
 .ttt-container {
   margin: auto;
   padding: 2.5rem 1rem 2rem 1rem;
@@ -115,30 +123,48 @@ body, html {
   letter-spacing: 1px;
 }
 
+/* Updated Restart button to match the design */
 .ttt-restart {
-  margin-top: 0.1rem;
-  background: var(--primary);
+  margin-top: 24px;
+  background: #2680EB; /* design notes: --primary-blue */
   color: #fff;
   border: none;
-  font-size: 1.05rem;
+  font-size: 1rem;
   font-weight: 600;
-  padding: 0.62em 2.35em;
-  border-radius: 7px;
+  font-family: "Helvetica Neue", Arial, sans-serif;
+  padding: 10px 32px;
+  border-radius: 8px;
   cursor: pointer;
   transition: background 0.18s;
-  box-shadow: 0 1px 4px 0 #1976d221;
   letter-spacing: 1px;
+  box-shadow: none;
 }
+/* Hover effect for accessibility */
+.ttt-restart:hover, .ttt-restart:focus {
+  background: #1453a4;
+}
+
 
 .ttt-restart:hover, .ttt-restart:focus {
   background: #1453a4;
 }
 
-.ttt-footer {
-  margin: 1.5rem 0 0.4rem 0;
-  color: var(--text);
-  font-size: 0.98rem;
+/* Floating footer styling to match design notes */
+.ttt-footer-floating {
+  margin-top: 56px;
+  margin-bottom: 1rem;
+  color: #FF5149; /* design notes: --footer-accent */
+  font-size: 0.75rem;
+  font-family: "Helvetica Neue", Arial, sans-serif;
+  line-height: 1.5;
   text-align: center;
+  width: 100vw;
+  font-weight: 400;
+  letter-spacing: 0.01em;
+  /* it floats below the card, not at bottom of page */
+  background: transparent;
+  box-shadow: none;
+  pointer-events: none; /* visually detached, not interactive */
 }
 
 /* Mobile responsiveness */
@@ -161,5 +187,13 @@ body, html {
     min-height: 38px;
     font-size: 1.5rem;
     margin: 2px;
+  }
+  .ttt-footer-floating {
+    font-size: 11px;
+    margin-top: 36px;
+  }
+  .ttt-restart {
+    font-size: 0.925rem;
+    padding: 9px 18px;
   }
 }

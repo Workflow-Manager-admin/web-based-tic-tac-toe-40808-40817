@@ -91,32 +91,36 @@ function App() {
   // Minimal and centered layout with light theme
   return (
     <div className="ttt-outer">
-      <main className="ttt-container" role="main">
-        <h1 className="ttt-title">Tic Tac Toe</h1>
-        <div className="ttt-board" role="grid" aria-label="Tic Tac Toe board">
-          {[0,1,2].map(row => (
-            <div className="ttt-row" key={row}>
-              { [0,1,2].map(col =>
-                renderSquare(row * 3 + col))}
-            </div>
-          ))}
-        </div>
-        <div className="ttt-info">
-          <div className="ttt-status">{status}</div>
-          <button
-            className="ttt-restart"
-            onClick={handleRestart}
-            aria-label="Restart game"
-          >
-            Restart
-          </button>
-        </div>
-      </main>
-      <footer className="ttt-footer">
-        <small>
-          Developed by Kavia
-        </small>
-      </footer>
+      {/* Main central area – includes card and floating footer, centers contents */}
+      <div className="ttt-main-centered">
+        <main className="ttt-container" role="main">
+          <h1 className="ttt-title">Tic Tac Toe</h1>
+          <div className="ttt-board" role="grid" aria-label="Tic Tac Toe board">
+            {[0,1,2].map(row => (
+              <div className="ttt-row" key={row}>
+                { [0,1,2].map(col =>
+                  renderSquare(row * 3 + col))}
+              </div>
+            ))}
+          </div>
+          <div className="ttt-info">
+            <div className="ttt-status">{status}</div>
+            <button
+              className="ttt-restart"
+              onClick={handleRestart}
+              aria-label="Restart game"
+            >
+              Restart
+            </button>
+          </div>
+        </main>
+        {/* Footer floats below the card with ample top margin */}
+        <footer className="ttt-footer-floating">
+          <small>
+            Developed by Kavia
+          </small>
+        </footer>
+      </div>
     </div>
   );
 }
