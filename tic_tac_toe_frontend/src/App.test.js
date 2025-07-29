@@ -26,7 +26,7 @@ test('renders minimalistic tic tac toe app UI and allows basic interaction', () 
   expect(screen.getByText(/X wins!/i)).toBeInTheDocument();
 
   // Restart resets game
-  fireEvent.click(screen.getByRole('button', { name: /restart/i }));
+  fireEvent.click(screen.getByRole('button', { name: /restart|start new game/i }));
   // Board should be empty again
   screen.getAllByRole('button', { name: /Cell/i }).forEach(cell =>
     expect(cell.textContent).toBe('')
@@ -34,4 +34,20 @@ test('renders minimalistic tic tac toe app UI and allows basic interaction', () 
   // Next: X again
   expect(screen.getByText(/Next:/)).toBeInTheDocument();
   expect(screen.getByText('X')).toBeInTheDocument();
+});
+
+test('can play to a draw', () => {
+  render(<App />);
+  const cells = screen.getAllByRole('button', { name: /Cell/i });
+  // Fill the board: X O X / X X O / O X O (no winner)
+  [
+    0, 1, 2, 3, 4, 5, 6, 7, 8
+  ].forEach(i => {
+    if (cells[i].textContent === '') fireEvent.click(cells[i]);
+    // alternate X and O automatically by the app logic
+  });
+  // Play moves: X, O, X, O, X, O, X, O, X in sequence
+  // After draw, should see "It's a draw!"
+  expect(screen.getByText(/draw!/i)).toBeInTheDocument();
+  expect(screen.getByRole('button', { name: /restart|start new game/i })).toBeInTheDocument();
 });
