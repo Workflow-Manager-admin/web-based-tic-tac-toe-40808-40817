@@ -3,18 +3,19 @@
   --primary: #1976d2;
   --secondary: #e3e3e3;
   --accent: #f44336;
-  --bg: #ffff00; /* Updated to yellow for application's background */
-  --text: #222;
+  --bg: #ffffff; /* App background set to white */
+  --text: #f44336; /* Default/global text color is red (accent) */
   --board-border: #e3e3e3;
 }
 
-/* Set the application's background to yellow, remain light & minimalistic */
+/* Set the application's background to white and all text to red (accent), minimalistic style */
 body, html {
   background: var(--bg) !important;
   color: var(--text);
   height: 100%;
   margin: 0;
   font-family: 'Inter', 'Helvetica Neue', Arial, sans-serif;
+  box-sizing: border-box;
 }
 
 .ttt-outer {
@@ -43,7 +44,7 @@ body, html {
   font-weight: 800;
   margin: 0 0 1.75rem 0;
   letter-spacing: 2px;
-  color: var(--primary);
+  color: var(--text);
 }
 
 .ttt-board {
@@ -103,13 +104,13 @@ body, html {
 }
 
 .ttt-winner {
-  color: var(--accent);
+  color: var(--accent); /* keeps winner red */
   font-weight: 700;
   letter-spacing: 1px;
 }
 
 .ttt-draw {
-  color: var(--primary);
+  color: var(--primary); /* "draw" will appear blue for distinction, all other text is red */
   font-weight: 600;
   letter-spacing: 1px;
 }
@@ -135,7 +136,7 @@ body, html {
 
 .ttt-footer {
   margin: 1.5rem 0 0.4rem 0;
-  color: #aaa;
+  color: var(--text);
   font-size: 0.98rem;
   text-align: center;
 }
