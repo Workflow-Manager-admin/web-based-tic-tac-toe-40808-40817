@@ -3,13 +3,14 @@
   --primary: #1976d2;
   --secondary: #e3e3e3;
   --accent: #f44336;
-  --bg: #fff;
+  --bg: #ffff00; /* Updated to yellow for application's background */
   --text: #222;
   --board-border: #e3e3e3;
 }
 
+/* Set the application's background to yellow, remain light & minimalistic */
 body, html {
-  background: var(--bg);
+  background: var(--bg) !important;
   color: var(--text);
   height: 100%;
   margin: 0;
